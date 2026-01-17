@@ -1,0 +1,86 @@
+repos:
+  # Базовые хуки
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+      - id: check-added-large-files
+        args: [ '--maxkb=500' ]
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: destroyed-symlinks
+      - id: mixed-line-ending
+        args: [ '--fix=lf' ]
+
+  # Black - форматирование кода
+  - repo: https://github.com/psf/black
+    rev: 25.12.0
+    hooks:
+      - id: black
+        language: python
+        types: [python]
+        args: ["--config=pyproject.toml"]
+        exclude: ^migrations/|^alembic/
+
+  # isort - сортировка импортов
+  - repo: https://github.com/pycqa/isort
+    rev: 7.0.0
+    hooks:
+      - id: isort
+        name: isort (python)
+        language: python
+        types: [python]
+        args: ["--settings-path=pyproject.toml"]
+        exclude: ^migrations/|^alembic/
+
+  # flake8 - линтинг
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.3.0
+    hooks:
+      - id: flake8
+        name: flake8
+        language: python
+        types: [python]
+        args: ["--config=.flake8"]
+        exclude: ^tests/|^migrations/|^alembic/
+
+  # mypy - проверка типов
+#  - repo: https://github.com/pre-commit/mirrors-mypy
+#    rev: v1.13.0
+#    hooks:
+#      - id: mypy
+#        name: mypy
+#        language: python
+#        types: [python]
+#        args: [
+#          "--config-file=pyproject.toml",
+#          "--explicit-package-bases",
+#          "--namespace-packages",
+#          "--exclude", "venv|.venv",
+#        ]
+#        exclude: ^tests/|^migrations/|^alembic/
+#        additional_dependencies:
+#          - fastapi>=0.100.0
+#          - pydantic>=2.0.0
+#          - sqlalchemy>=2.0.0
+#          - starlette>=0.27.0
+#          - aiohttp>=3.9.0
+#          - types-requests
+#          - types-pyyaml
+#          - types-pyjwt
+
+  # pytest - запуск тестов
+  # - repo: local
+  #   hooks:
+  #     - id: pytest
+  #       name: pytest
+  #       entry: poetry run pytest
+  #       language: system
+  #       pass_filenames: false
+  #       always_run: true
+  #       stages: [push]
