@@ -41,3 +41,18 @@ class UserIdNotInJWTException(WalletException):
 
 class UserNotFoundException(WalletException):
     status_code = status.HTTP_401_UNAUTHORIZED
+
+
+class WalletNotFound(WalletException):
+    status_code = status.HTTP_404_NOT_FOUND
+    detail = "Кошелек не найден"
+
+
+class NotEnoughFunds(WalletException):
+    status_code = status.HTTP_409_CONFLICT
+    detail = "Недостаточно средств"
+
+
+class DontHaveThisWallet(WalletException):
+    status_code = status.HTTP_403_FORBIDDEN
+    detail = "У вас нет такого кошелька"
