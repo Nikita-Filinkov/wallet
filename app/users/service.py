@@ -1,4 +1,4 @@
-from typing import Optional, Type
+from typing import Optional
 
 from sqlalchemy import select
 
@@ -9,7 +9,7 @@ from app.users.shemas import UserShortResponse
 
 
 class UsersService(BaseService):
-    model: Type[Users] = Users
+    model = Users
 
     @classmethod
     async def find_by_id(cls, model_id: int) -> Optional[UserShortResponse]:
@@ -23,7 +23,7 @@ class UsersService(BaseService):
             return None
 
     @classmethod
-    async def add(cls, **data) -> Users:  # type: ignore[override]
+    async def add(cls, **data) -> Users:
         async with async_session_maker() as session:
             instance = cls.model(**data)
             session.add(instance)

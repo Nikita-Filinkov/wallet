@@ -6,6 +6,7 @@ from app.users.dependencies import get_current_user
 from app.users.models import Users
 from app.users.service import UsersService
 from app.users.shemas import SUserAuth, UserShortResponse
+from app.wallet.service import WalletsService
 
 router = APIRouter(
     prefix="/auth",
@@ -25,8 +26,9 @@ async def register_user(
     user = await UsersService.add(
         email=register_data.email, hashed_password=hashed_password
     )
+    wallet = await WalletsService.add(user_id=user.id)
 
-    return UserShortResponse(id=user.id, email=user.email)
+    return UserShortResponse(id=user.id, email=user.email, wallets=[wallet.wallet_uuid])
 
 
 @router.post("/login")
@@ -50,4 +52,7 @@ async def logout_user(response: Response) -> dict[str, str]:
 async def read_users_me(
     current_user: Users = Depends(get_current_user),
 ) -> UserShortResponse:
-    return UserShortResponse(id=current_user.id, email=current_user.email)
+    wallets = [wallet.wallet_uuid for wallet in current_user.wallets]
+    return UserShortResponse(
+        id=current_user.id, email=current_user.email, wallets=wallets
+    )
