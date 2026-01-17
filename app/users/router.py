@@ -50,9 +50,6 @@ async def logout_user(response: Response) -> dict[str, str]:
 
 @router.get("/me", response_model=UserShortResponse)
 async def read_users_me(
-    current_user: Users = Depends(get_current_user),
+    current_user: UserShortResponse = Depends(get_current_user),
 ) -> UserShortResponse:
-    wallets = [wallet.wallet_uuid for wallet in current_user.wallets]
-    return UserShortResponse(
-        id=current_user.id, email=current_user.email, wallets=wallets
-    )
+    return current_user

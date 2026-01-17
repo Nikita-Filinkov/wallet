@@ -1,6 +1,7 @@
 from typing import Optional
 
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from app.database import async_session_maker
 from app.service.base import BaseService
@@ -14,12 +15,17 @@ class UsersService(BaseService):
     @classmethod
     async def find_by_id(cls, model_id: int) -> Optional[UserShortResponse]:
         async with async_session_maker() as session:
-            query = select(cls.model.id, cls.model.email).where(
-                cls.model.id == model_id
+            query = (
+                select(cls.model)
+                .options(selectinload(cls.model.wallets))
+                .where(cls.model.id == model_id)
             )
             result = await session.execute(query)
-            if row := result.first():
-                return UserShortResponse(id=row[0], email=row[1])
+            user = result.scalar_one_or_none()
+
+            if user:
+                wallets = [wallet.wallet_uuid for wallet in user.wallets]
+                return UserShortResponse(id=user.id, email=user.email, wallets=wallets)
             return None
 
     @classmethod
