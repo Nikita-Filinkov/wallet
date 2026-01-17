@@ -33,3 +33,14 @@ async def change_balance(
         else:
             raise DontHaveThisWallet
         return result
+
+
+@router.get("/{wallet_uuid}", response_model=SWalletBalance)
+async def get_balance(
+    wallet_uuid: UUID, current_user: UserShortResponse = Depends(get_current_user)
+) -> SWalletBalance:
+    if wallet_uuid in current_user.wallets:
+        wallet = await WalletsService.find_one_or_none(wallet_uuid=wallet_uuid)
+        return SWalletBalance(wallet_uuid=wallet.wallet_uuid, balance=wallet.balance)
+    else:
+        raise DontHaveThisWallet
