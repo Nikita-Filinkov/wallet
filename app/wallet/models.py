@@ -31,7 +31,7 @@ class Wallets(Base):
         Numeric(10, 2), default=Decimal("0.00"), nullable=False
     )
 
-    currency: Mapped[str] = mapped_column(String(3), default="USD", nullable=False)
+    currency: Mapped[str] = mapped_column(String(3), default="RUB", nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
