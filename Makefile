@@ -47,10 +47,6 @@ type-check:
 pre-commit:
 	poetry run pre-commit run --all-files
 
-#test:
-#	@echo "Запуск тестов..."
-#	poetry run pytest -v
-
 db-up:
 	docker-compose up -d db
 	@echo "Ожидание готовности БД..."
@@ -82,13 +78,18 @@ run:
 	poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 clean:
-	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-	find . -type d -name "*.pyc" -delete 2>/dev/null || true
-	find . -type d -name ".mypy_cache" -exec rm -rf {} + 2>/dev/null || true
-	find . -type d -name ".pytest_cache" -exec rm -rf {} + 2>/dev/null || true
-	find . -type f -name ".coverage" -delete 2>/dev/null || true
-	rm -rf htmlcov/ 2>/dev/null || true
-	@echo "✅ Очистка завершена"
+	@if exist __pycache__ rmdir /s /q __pycache__ 2>nul
+	@for /r . %%d in (__pycache__) do @if exist "%%d" rmdir /s /q "%%d" 2>nul
+	@if exist .pytest_cache rmdir /s /q .pytest_cache 2>nul
+	@if exist .mypy_cache rmdir /s /q .mypy_cache 2>nul
+	@del /s /q *.pyc 2>nul
+	@del .coverage 2>nul
+	@if exist htmlcov rmdir /s /q htmlcov 2>nul
+
+# test:
+#	@make clean
+#	@echo "🚀 Запуск тестов..."
+#	poetry run pytest -v
 
 all-checks: lint type-check test pre-commit
 	@echo "✅ Все проверки пройдены!"

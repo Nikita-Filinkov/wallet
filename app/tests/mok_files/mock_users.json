@@ -1,0 +1,14 @@
+[
+    {
+        "email": "test@test.com",
+        "hashed_password": "$5$rounds=535000$KwgX6o/5V3gQSgp9$atG9cGyc1jjIDtu8ry4JmS.YMQi6WPbXdrmYUt36sq4"
+    },
+    {
+        "email": "nikita@example.com",
+        "hashed_password": "$5$rounds=535000$fr0U6cNskiX/UEhN$lKnSMAizzQY04AYB5BqjHF1AcTuM2BDHA8IHHMfJUC9"
+    },
+    {
+        "email": "artem@example.com",
+        "hashed_password": "$5$rounds=535000$Bt2yl7TNkVQw.QIm$RX3bLCaVYpsJNnigbnL6YWKQWSY0aLjHqT.hW9EaxO8"
+    }
+]

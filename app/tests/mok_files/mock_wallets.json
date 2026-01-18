@@ -1,0 +1,26 @@
+[
+    {
+    "wallet_uuid": "7137abbc-ca3c-4ce1-9369-a4f1cdeabb0d",
+    "user_id": 1,
+    "balance": 1000,
+    "currency": "RUB",
+    "created_at": "2026-01-10",
+    "updated_at": "2026-01-18"
+    },
+    {
+    "wallet_uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "user_id": 2,
+    "balance": 1000,
+    "currency": "RUB",
+    "created_at": "2026-01-11",
+    "updated_at": "2026-01-11"
+    },
+    {
+    "wallet_uuid": "3fa85f64-ca3c-5e1a-9369-2c963f66afa6",
+    "user_id": 3,
+    "balance": 1000,
+    "currency": "USD",
+    "created_at": "2026-01-12",
+    "updated_at": "2026-01-16"
+    }
+]
