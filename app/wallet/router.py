@@ -41,6 +41,10 @@ async def get_balance(
 ) -> SWalletBalance:
     if wallet_uuid in current_user.wallets:
         wallet = await WalletsService.find_one_or_none(wallet_uuid=wallet_uuid)
-        return SWalletBalance(wallet_uuid=wallet.wallet_uuid, balance=wallet.balance)
+        return SWalletBalance(
+            wallet_uuid=wallet.wallet_uuid,
+            balance=wallet.balance,
+            updated_at=wallet.updated_at,
+        )
     else:
         raise DontHaveThisWallet

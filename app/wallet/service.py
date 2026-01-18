@@ -19,11 +19,16 @@ class WalletsService(BaseService):
             query = select(cls.model).where(cls.model.wallet_uuid == wallet_uuid)
             result = await session.execute(query)
             wallet = result.scalar_one_or_none()
-
             if not wallet:
                 return None
             wallet.balance += amount
-        return SWalletBalance(wallet_uuid=wallet.wallet_uuid, balance=wallet.balance)
+            await session.refresh(wallet)
+
+            return SWalletBalance(
+                wallet_uuid=wallet.wallet_uuid,
+                balance=wallet.balance,
+                updated_at=wallet.updated_at,
+            )
 
     @classmethod
     async def withdraw_balance(cls, wallet_uuid: UUID, amount: Decimal):
@@ -31,11 +36,15 @@ class WalletsService(BaseService):
             query = select(cls.model).where(cls.model.wallet_uuid == wallet_uuid)
             result = await session.execute(query)
             wallet = result.scalar_one_or_none()
-
             if not wallet:
                 return None
             if wallet.balance < amount:
                 raise NotEnoughFunds()
             wallet.balance -= amount
+            await session.refresh(wallet)
 
-        return SWalletBalance(wallet_uuid=wallet.wallet_uuid, balance=wallet.balance)
+            return SWalletBalance(
+                wallet_uuid=wallet.wallet_uuid,
+                balance=wallet.balance,
+                updated_at=wallet.updated_at,
+            )
