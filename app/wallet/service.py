@@ -19,9 +19,13 @@ class WalletsService(BaseService):
             query = select(cls.model).where(cls.model.wallet_uuid == wallet_uuid)
             result = await session.execute(query)
             wallet = result.scalar_one_or_none()
+
             if not wallet:
                 return None
+
             wallet.balance += amount
+
+            await session.flush()
             await session.refresh(wallet)
 
             return SWalletBalance(
@@ -36,11 +40,16 @@ class WalletsService(BaseService):
             query = select(cls.model).where(cls.model.wallet_uuid == wallet_uuid)
             result = await session.execute(query)
             wallet = result.scalar_one_or_none()
+
             if not wallet:
                 return None
+
             if wallet.balance < amount:
                 raise NotEnoughFunds()
+
             wallet.balance -= amount
+
+            await session.flush()
             await session.refresh(wallet)
 
             return SWalletBalance(

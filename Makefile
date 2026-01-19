@@ -63,12 +63,14 @@ db-status:
 
 db-migrate:
 	poetry run alembic upgrade head
-
+docker-build-up:
+	docker-compose build
+	docker-compose up
 docker-up:
 	docker-compose up -d
 
 docker-down:
-	docker-compose down
+	docker-compose down -v
 
 docker-logs:
 	@docker-compose logs -f app

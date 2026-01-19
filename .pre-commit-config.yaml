@@ -80,7 +80,7 @@ repos:
   #     - id: pytest
   #       name: pytest
   #       entry: poetry run pytest
-  #       language: system
+  #       language: python
   #       pass_filenames: false
   #       always_run: true
   #       stages: [push]

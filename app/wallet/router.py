@@ -17,7 +17,6 @@ async def change_balance(
     operation_data: SChangeBalance,
     current_user: UserShortResponse = Depends(get_current_user),
 ) -> SWalletBalance:
-
     if operation_data.operation_type == "deposit":
         result = await WalletsService.deposit_balance(
             wallet_uuid=wallet_uuid, amount=operation_data.amount

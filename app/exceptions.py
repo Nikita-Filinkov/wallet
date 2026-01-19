@@ -56,3 +56,28 @@ class NotEnoughFunds(WalletException):
 class DontHaveThisWallet(WalletException):
     status_code = status.HTTP_403_FORBIDDEN
     detail = "У вас нет такого кошелька"
+
+
+class NegativeAmount(WalletException):
+    status_code = status.HTTP_406_NOT_ACCEPTABLE
+    detail = "Число должно быть положительным"
+
+
+class MoreTowDecimalAfterComma(WalletException):
+    status_code = status.HTTP_406_NOT_ACCEPTABLE
+    detail = "Введено больше двух цифр после запятой"
+
+
+class WrongOperationType(WalletException):
+    status_code = status.HTTP_406_NOT_ACCEPTABLE
+    detail = "Тип операции должен быть 'deposit' или 'withdraw'"
+
+
+class WrongAmount(WalletException):
+    status_code = status.HTTP_406_NOT_ACCEPTABLE
+    detail = "Не верный формат ввода 'amount'"
+
+
+class MaxAmountExceeded(WalletException):
+    status_code = status.HTTP_406_NOT_ACCEPTABLE
+    detail = "Введённое число превышает 10000000"
