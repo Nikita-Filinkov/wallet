@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends
+from fastapi_versioning import version
 
 from app.exceptions import DontHaveThisWallet, NotEnoughFunds, WalletNotFound
 from app.users.dependencies import get_current_user
@@ -12,6 +13,7 @@ router = APIRouter(prefix="/wallet", tags=["Wallet"])
 
 
 @router.patch("/{wallet_uuid}", response_model=SWalletBalance)
+@version(1)
 async def change_balance(
     wallet_uuid: UUID,
     operation_data: SChangeBalance,
@@ -35,6 +37,7 @@ async def change_balance(
 
 
 @router.get("/{wallet_uuid}", response_model=SWalletBalance)
+@version(1)
 async def get_balance(
     wallet_uuid: UUID, current_user: UserShortResponse = Depends(get_current_user)
 ) -> SWalletBalance:

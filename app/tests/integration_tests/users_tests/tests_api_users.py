@@ -14,7 +14,7 @@ from httpx import AsyncClient
 @pytest.mark.asyncio
 async def test_register_user(email, password, status_code, asyncclient: AsyncClient):
     response = await asyncclient.post(
-        "/auth/register", json={"email": email, "password": password}
+        "/v1/auth/register", json={"email": email, "password": password}
     )
     assert response.status_code == status_code
 
@@ -30,14 +30,14 @@ async def test_register_user(email, password, status_code, asyncclient: AsyncCli
 @pytest.mark.asyncio
 async def test_logging_user(email, password, status_code, asyncclient: AsyncClient):
     response = await asyncclient.post(
-        "/auth/login", json={"email": email, "password": password}
+        "/v1/auth/login", json={"email": email, "password": password}
     )
     assert response.status_code == status_code
 
 
 @pytest.mark.asyncio
 async def test_logout_user(auth_asyncclient: AsyncClient):
-    response = await auth_asyncclient.post("/auth/logout")
+    response = await auth_asyncclient.post("/v1/auth/logout")
     cookies = response.cookies
     wallet_cookie = cookies.get("wallet_access_token")
     assert response.status_code == 200

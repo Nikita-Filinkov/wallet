@@ -63,7 +63,8 @@ async def auth_asyncclient():
             transport=ASGITransport(app=manager.app), base_url="http://test"
         ) as auth_ac:
             login_response = await auth_ac.post(
-                url="/auth/login", json={"email": "test@test.com", "password": "test"}
+                url="/v1/auth/login",
+                json={"email": "test@test.com", "password": "test"},
             )
             auth_ac.cookies.update(login_response.cookies)
             yield auth_ac

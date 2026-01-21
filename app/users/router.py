@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Response
+from fastapi_versioning import version
 
 from app.exceptions import IncorrectEmailOrPasswordException, UserAlreadyExistsException
 from app.users.auth import auth_user, create_access_token, get_password_hash
@@ -15,6 +16,7 @@ router = APIRouter(
 
 
 @router.post("/register", response_model=UserShortResponse)
+@version(1)
 async def register_user(
     register_data: SUserAuth,
 ) -> UserShortResponse:
@@ -32,6 +34,7 @@ async def register_user(
 
 
 @router.post("/login")
+@version(1)
 async def loging_user(response: Response, user_date: SUserAuth) -> str:
     user = await auth_user(email=user_date.email, password=user_date.password)
     if not user:
@@ -43,12 +46,14 @@ async def loging_user(response: Response, user_date: SUserAuth) -> str:
 
 
 @router.post("/logout")
+@version(1)
 async def logout_user(response: Response) -> dict[str, str]:
     response.delete_cookie("wallet_access_token")
     return {"message": "Successfully logged out"}
 
 
 @router.get("/me", response_model=UserShortResponse)
+@version(1)
 async def read_users_me(
     current_user: UserShortResponse = Depends(get_current_user),
 ) -> UserShortResponse:

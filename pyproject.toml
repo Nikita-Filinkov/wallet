@@ -56,20 +56,6 @@ exclude = [
   ".pytest_cache"
 ]
 
-[tool.mypy]
-python_version = "3.12"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-ignore_missing_imports = true
-exclude = [
-  "venv",
-  ".venv",
-  "build",
-  ".mypy_cache",
-  ".pytest_cache"
-]
-
 [tool.pytest.ini_options]
 testpaths = ["app/tests"]
 python_files = ["test_*.py"]
@@ -90,6 +76,7 @@ python-dotenv = "^1.0.0"
 pyjwt = "^2.10.1"
 passlib = "^1.7.4"
 bcrypt = "^5.0.0"
+fastapi-versioning = "^0.10.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.0"

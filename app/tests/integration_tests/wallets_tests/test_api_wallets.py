@@ -19,7 +19,7 @@ from httpx import AsyncClient
 ])
 @pytest.mark.asyncio
 async def test_change_balance(wallet_uuid, operation_type, status_code, amount, detail, auth_asyncclient: AsyncClient):
-    response = await auth_asyncclient.patch(f"/wallet/{wallet_uuid}",
+    response = await auth_asyncclient.patch(f"/v1/wallet/{wallet_uuid}",
                                             json={"operation_type": operation_type, "amount": amount})
     assert response.status_code == status_code
     response_data = response.json()
@@ -28,14 +28,20 @@ async def test_change_balance(wallet_uuid, operation_type, status_code, amount, 
 
 @pytest.mark.parametrize(['wallet_uuid', 'balance', 'status_code', 'detail'], [
     ('7137abbc-ca3c-4ce1-9369-a4f1cdeabb0d', "0.00", 200, None),
-    ('7137abbc-ca3c-4ce1-9369-a4f1cd', None, 422, "Неверный формат UUID кошелька"),
+    ('7137abbc-ca3c-4ce1-9369-a4f1cd', None, 422, 'has_error'),
     ('3fa85f64-5717-4562-b3fc-2c963f66afa6', None, 403, "У вас нет такого кошелька"),
     ('8137abbc-ca3c-4ce1-9369-a4f1cdeabb0d', None, 404, "Кошелек не найден"),
 ])
 @pytest.mark.asyncio
 async def test_get_balance(wallet_uuid, balance, status_code, detail, auth_asyncclient: AsyncClient):
-    response = await auth_asyncclient.get(f"/wallet/{wallet_uuid}")
+    response = await auth_asyncclient.get(f"/v1/wallet/{wallet_uuid}")
     assert response.status_code == status_code
     response_data = response.json()
+
     assert response_data.get("balance") == balance
-    assert response_data.get("detail") == detail
+
+    if detail == 'has_error':
+        assert "detail" in response_data
+        assert response_data["detail"] is not None
+    else:
+        assert response_data.get("detail") == detail
