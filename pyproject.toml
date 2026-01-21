@@ -16,18 +16,21 @@ target-version = ['py312']
 include = '\.pyi?$'
 extend-exclude = '''
 /(
-  | \.eggs
-  | \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | venv
-  | _build
-  | buck-out
-  | build
-  | dist
+    \.eggs
+    | \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | venv
+    | _build
+    | buck-out
+    | build
+    | dist
 )/
+'''
+force-exclude = '''
+app/tests/integration_tests/wallets_tests/test_api_wallets\.py
 '''
 
 [tool.isort]
@@ -74,6 +77,7 @@ python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "-v --cov=app  --cov-report=term-missing --cov-report=html --asyncio-mode=strict"
 asyncio_mode = "strict"
+
 
 [tool.poetry.dependencies]
 python = "^3.12"

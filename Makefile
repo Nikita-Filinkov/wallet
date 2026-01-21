@@ -75,6 +75,15 @@ docker-down:
 docker-logs:
 	@docker-compose logs -f app
 
+test-local:
+	poetry run pytest -v \
+		--tb=short \
+		--disable-warnings \
+		--ignore=app/tests/integration_tests/wallets_tests/test_api_wallets.py
+
+test-docker:
+	docker-compose exec app env MODE=TEST LOG_LEVEL=DEBUG pytest app/tests/ -v
+
 run:
 	@echo "Запуск Wallet API..."
 	poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
@@ -87,11 +96,6 @@ clean:
 	@del /s /q *.pyc 2>nul
 	@del .coverage 2>nul
 	@if exist htmlcov rmdir /s /q htmlcov 2>nul
-
-# test:
-#	@make clean
-#	@echo "🚀 Запуск тестов..."
-#	poetry run pytest -v
 
 all-checks: lint type-check test pre-commit
 	@echo "✅ Все проверки пройдены!"

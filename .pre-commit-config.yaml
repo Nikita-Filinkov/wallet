@@ -24,7 +24,6 @@ repos:
       - id: black
         language: python
         types: [python]
-        args: ["--config=pyproject.toml"]
         exclude: ^migrations/|^alembic/
 
   # isort - сортировка импортов
@@ -75,12 +74,12 @@ repos:
 #          - types-pyjwt
 
   # pytest - запуск тестов
-  # - repo: local
-  #   hooks:
-  #     - id: pytest
-  #       name: pytest
-  #       entry: poetry run pytest
-  #       language: python
-  #       pass_filenames: false
-  #       always_run: true
-  #       stages: [push]
+  - repo: local
+    hooks:
+     - id: pytest
+       name: pytest
+       entry: poetry run pytest
+       language: python
+       pass_filenames: false
+       always_run: true
+       stages: [pre-commit]

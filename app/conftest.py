@@ -14,7 +14,7 @@ from app.users.models import Users
 from app.wallet.models import Wallets
 
 
-@pytest.fixture(scope="session")
+@pytest_asyncio.fixture(scope="session")
 def event_loop():
     loop = asyncio.new_event_loop()
     yield loop
@@ -47,7 +47,7 @@ async def prepare_database():
     yield
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def asyncclient():
     async with LifespanManager(fastapi_app) as manager:
         async with AsyncClient(
@@ -56,7 +56,7 @@ async def asyncclient():
             yield ac
 
 
-@pytest.fixture(scope="session")
+@pytest_asyncio.fixture(scope="session")
 async def auth_asyncclient():
     async with LifespanManager(fastapi_app) as manager:
         async with AsyncClient(
@@ -69,7 +69,7 @@ async def auth_asyncclient():
             yield auth_ac
 
 
-@pytest.fixture(scope="function")
+@pytest_asyncio.fixture(scope="function")
 async def session():
     async with async_session_maker() as session:
         yield session

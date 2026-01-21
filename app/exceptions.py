@@ -1,4 +1,6 @@
-from fastapi import HTTPException, status
+from fastapi import FastAPI, HTTPException, Request, status
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 
 
 class WalletException(HTTPException):
@@ -59,25 +61,51 @@ class DontHaveThisWallet(WalletException):
 
 
 class NegativeAmount(WalletException):
-    status_code = status.HTTP_406_NOT_ACCEPTABLE
+    status_code = status.HTTP_400_BAD_REQUEST
     detail = "Число должно быть положительным"
 
 
 class MoreTowDecimalAfterComma(WalletException):
-    status_code = status.HTTP_406_NOT_ACCEPTABLE
+    status_code = status.HTTP_400_BAD_REQUEST
     detail = "Введено больше двух цифр после запятой"
 
 
 class WrongOperationType(WalletException):
-    status_code = status.HTTP_406_NOT_ACCEPTABLE
+    status_code = status.HTTP_400_BAD_REQUEST
     detail = "Тип операции должен быть 'deposit' или 'withdraw'"
 
 
 class WrongAmount(WalletException):
-    status_code = status.HTTP_406_NOT_ACCEPTABLE
+    status_code = status.HTTP_400_BAD_REQUEST
     detail = "Не верный формат ввода 'amount'"
 
 
 class MaxAmountExceeded(WalletException):
-    status_code = status.HTTP_406_NOT_ACCEPTABLE
+    status_code = status.HTTP_400_BAD_REQUEST
     detail = "Введённое число превышает 10000000"
+
+
+def add_validation_exception_handler(app: FastAPI):
+    """Добавляет кастомный обработчик ошибок валидации"""
+
+    @app.exception_handler(RequestValidationError)
+    async def custom_validation_exception_handler(
+        request: Request, exc: RequestValidationError
+    ):
+        errors = exc.errors()
+
+        for error in errors:
+            if error["type"] == "uuid_parsing":
+                if "wallet_uuid" in str(error["loc"]):
+                    return JSONResponse(
+                        status_code=422,
+                        content={
+                            "detail": "Неверный формат UUID кошелька",
+                            "hint": "Используйте формат: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+                            "example": "123e4567-e89b-12d3-a456-426614174000",
+                            "received": str(error.get("input", "")),
+                        },
+                    )
+        return JSONResponse(status_code=422, content={"detail": exc.errors()})
+
+    return app

@@ -2,7 +2,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends
 
-from app.exceptions import DontHaveThisWallet, NotEnoughFunds
+from app.exceptions import DontHaveThisWallet, NotEnoughFunds, WalletNotFound
 from app.users.dependencies import get_current_user
 from app.users.shemas import UserShortResponse
 from app.wallet.service import WalletsService
@@ -22,7 +22,7 @@ async def change_balance(
             wallet_uuid=wallet_uuid, amount=operation_data.amount
         )
         if result is None:
-            raise NotEnoughFunds
+            raise WalletNotFound
         return result
     elif operation_data.operation_type == "withdraw":
         if wallet_uuid in current_user.wallets:
@@ -38,12 +38,19 @@ async def change_balance(
 async def get_balance(
     wallet_uuid: UUID, current_user: UserShortResponse = Depends(get_current_user)
 ) -> SWalletBalance:
-    if wallet_uuid in current_user.wallets:
+    if wallet_uuid not in current_user.wallets:
         wallet = await WalletsService.find_one_or_none(wallet_uuid=wallet_uuid)
-        return SWalletBalance(
-            wallet_uuid=wallet.wallet_uuid,
-            balance=wallet.balance,
-            updated_at=wallet.updated_at,
-        )
-    else:
-        raise DontHaveThisWallet
+        if not wallet:
+            raise WalletNotFound
+        else:
+            raise DontHaveThisWallet
+
+    wallet = await WalletsService.find_one_or_none(wallet_uuid=wallet_uuid)
+    if not wallet:
+        raise WalletNotFound
+
+    return SWalletBalance(
+        wallet_uuid=wallet.wallet_uuid,
+        balance=wallet.balance,
+        updated_at=wallet.updated_at,
+    )
